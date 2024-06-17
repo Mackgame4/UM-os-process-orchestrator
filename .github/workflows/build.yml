@@ -1,0 +1,20 @@
+name: Build [make]
+on: [pull_request]
+
+jobs:
+  build:
+    name: Build Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build client with make
+      working-directory: ./client
+      run: make
+
+    - name: Build server with make
+      working-directory: ./server
+      run: make
+

@@ -1,0 +1,48 @@
+name: Check memory leaks [valgrind]
+on: []
+
+jobs:
+  build:
+    name: Memory leaks Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Install Valgrind
+      run: |
+        sudo apt update
+        sudo apt install -y valgrind
+    
+    - name: Build client project
+      working-directory: ./client
+      run: DEBUG=1 make
+
+    - name: Run Valgrind on client
+      working-directory: ./client
+      run: |
+        make check-memory 2>&1 | tee valgrind_output.txt
+        set -e
+        if grep -q "ERROR SUMMARY: 0 errors" valgrind_output.txt; then
+          echo "No memory leaks detected."
+        else
+          echo "Memory leaks detected!"
+          exit 1
+        fi
+
+    - name: Build server project
+      working-directory: ./server
+      run: DEBUG=1 make
+
+    - name: Run Valgrind on server
+      working-directory: ./server
+      run: |
+        make check-memory 2>&1 | tee valgrind_output.txt
+        set -e
+        if grep -q "ERROR SUMMARY: 0 errors" valgrind_output.txt; then
+          echo "No memory leaks detected."
+        else
+          echo "Memory leaks detected!"
+          exit 1
+        fi
