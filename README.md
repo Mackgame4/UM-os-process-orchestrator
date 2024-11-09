@@ -1,4 +1,5 @@
-# Trivial-Orchestrator OS
+# UM-os-process-orchestrator
+_🗂️ Course project for UM for SO in 2023/24_
 
 ## About the Project
 
